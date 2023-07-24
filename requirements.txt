@@ -5,7 +5,10 @@ dagster-webserver==1.4.2
 # Dagster integrations
 dagster-dbt==0.20.2
 dagster-docker==0.20.2
+dagster-graphql==0.20.2
 dagster-airbyte==0.20.2
+dagster-postgres==0.20.2
+dagster-docker==0.20.2
 dagster-gcp==0.20.2
 dagster-duckdb==0.20.2
 dagster-duckdb-pandas==0.20.2

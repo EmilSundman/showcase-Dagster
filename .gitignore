@@ -6,3 +6,4 @@ logs/
 *.duckdb
 *.db
 tmp*/
+*.env

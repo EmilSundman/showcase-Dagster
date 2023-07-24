@@ -5,7 +5,7 @@ from dagster import asset
 from assets_dbt_python.utils import random_data
 
 
-@asset(compute_kind="random")
+@asset(compute_kind="duckdb")
 def users() -> pd.DataFrame:
     """A table containing all users data."""
     return pd.DataFrame(
@@ -19,7 +19,7 @@ def users() -> pd.DataFrame:
     )
 
 
-@asset(compute_kind="random")
+@asset(compute_kind="duckdb")
 def orders() -> pd.DataFrame:
     """A table containing all orders that have been placed."""
     return random_data(
