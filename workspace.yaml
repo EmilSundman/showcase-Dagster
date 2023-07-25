@@ -5,3 +5,7 @@ load_from:
       host: docker_user_code
       port: 4266
       location_name: "user_code"
+  - grpc_server:
+      host: docker_data_generators
+      port: 4001
+      location_name: "data_generators"
