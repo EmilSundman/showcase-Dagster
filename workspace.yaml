@@ -1,10 +1,7 @@
 # workspace.yaml
 
-# load_from:
-#   - python_module:
-#     module_name: assets_dbt_python
 load_from:
   - grpc_server:
       host: docker_user_code
-      port: 4000
+      port: 4266
       location_name: "user_code"

@@ -2,11 +2,18 @@ FROM python:3.9-slim
 
 WORKDIR /opt/dagster/app
 
-COPY requirements.txt /opt/dagster/app
+ENV DAGSTER_HOME=/opt/dagster/dagster_home/
+RUN mkdir -p $DAGSTER_HOME
 
+
+COPY dagster.yaml /opt/dagster/app/
+COPY workspace.yaml /opt/dagster/app/
+COPY requirements.txt /opt/dagster/app/
 RUN pip install -r requirements.txt
-
 ADD assets_dbt_python /opt/dagster/app/assets_dbt_python
 ADD dbt_project /opt/dagster/app/dbt_project
 
-CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000"]
+
+EXPOSE 4266
+
+CMD ["dagster", "api", "grpc", "-f", "./assets_dbt_python/definitions.py", "-h", "0.0.0.0", "-p", "4266"]

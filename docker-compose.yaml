@@ -29,20 +29,19 @@ services:
     networks:
       - docker_network
 
+
   docker_dagster_ui:
     build:
       context: .
       dockerfile: ./Dockerfile_dagster
     entrypoint:
-      - dagster 
-      - api
-      - grpc
+      - dagster-webserver
       - -h
       - "0.0.0.0"
       - -p
       - "3000"
-      # - -w
-      # - workspace.yaml
+      - -w
+      - workspace.yaml
     container_name: docker_dagster_ui
     expose:
       - "3000"
