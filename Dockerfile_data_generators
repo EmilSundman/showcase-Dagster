@@ -1,0 +1,18 @@
+FROM python:3.9-slim
+
+WORKDIR /opt/dagster/app
+
+ENV DAGSTER_HOME=/opt/dagster/dagster_home/
+RUN mkdir -p $DAGSTER_HOME
+
+
+COPY dagster.yaml /opt/dagster/app/
+COPY workspace.yaml /opt/dagster/app/
+COPY location_data_generators/requirements.txt /opt/dagster/app/
+RUN pip install -r requirements.txt
+ADD location_data_generators /opt/dagster/app/location_data_generators
+
+
+EXPOSE 4001
+
+CMD ["dagster", "api", "grpc", "-f", "./location_data_generators/definitions.py", "-h", "0.0.0.0", "-p", "4001"]
