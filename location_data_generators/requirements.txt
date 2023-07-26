@@ -6,3 +6,14 @@ dagster-graphql==1.4.2
 # Dagster integrations
 dagster-docker==0.20.2
 dagster-postgres==0.20.2
+dagster-duckdb==0.20.2
+dagster-duckdb-pandas==0.20.2
+
+# Duck DB
+duckdb==0.7.1
+
+# dbt 
+dbt-duckdb==1.5.2
+
+# Others
+pandas==2.0.3
