@@ -20,6 +20,7 @@ from location_data_generators.assets import raw_data
 MANIFEST_PATH = "/opt/dagster/app/dbt_transformations/target/manifest.json"
 DBT_PROJECT_DIR = "/opt/dagster/app/dbt_transformations/."
 DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/config/."
+dbt_cli_args = ["--profiles-dir", f"{DBT_PROFILES_DIR}"]
 
 
 raw_data_assets = load_assets_from_package_module(
@@ -28,11 +29,10 @@ raw_data_assets = load_assets_from_package_module(
     # all of these assets live in the duckdb database, under the schema raw_data
     key_prefix=["raw_data", "duckster", "duckdb"],
 )
-
 @dbt_assets(manifest=Path(MANIFEST_PATH))
 def collection_of_dbt_assets(context: OpExecutionContext, dbt: DbtCliResource):
     dbt_task = dbt.cli(
-        ["run", "--profiles-dir", f"{DBT_PROFILES_DIR}"], 
+        ["run", *dbt_cli_args], 
         manifest=MANIFEST_PATH, 
         context=context
         )
