@@ -8,12 +8,14 @@ dagster-docker==0.20.2
 dagster-postgres==0.20.2
 dagster-duckdb==0.20.2
 dagster-duckdb-pandas==0.20.2
+dagster-dbt==0.20.2
 
 # Duck DB
 duckdb==0.7.1
 
 # dbt 
-dbt-duckdb==1.5.2
+dbt-duckdb==1.5.1
+dbt-core==1.5.2
 
 # Others
 pandas==2.0.3

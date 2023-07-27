@@ -10,8 +10,7 @@ COPY dagster.yaml /opt/dagster/app/
 COPY workspace.yaml /opt/dagster/app/
 COPY location_data_generators/requirements.txt /opt/dagster/app/
 RUN pip install -r requirements.txt
-ADD location_data_generators /opt/dagster/app/location_data_generators
-
+COPY location_data_generators /opt/dagster/app/location_data_generators
 
 EXPOSE 4001
 

@@ -1,0 +1,7 @@
+dbt_transformations:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: Ducky.duckdb
+      schema: ducky
