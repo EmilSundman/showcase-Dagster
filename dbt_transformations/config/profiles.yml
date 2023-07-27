@@ -3,5 +3,5 @@ dbt_transformations:
   outputs:
     local:
       type: duckdb
-      path: Ducky.duckdb
-      schema: ducky
+      path: duckster.duckdb
+      schema: duckster
