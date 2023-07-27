@@ -7,7 +7,7 @@ con = duckdb.connect()
 
 source_asset = SourceAsset(key=AssetKey("some_asset"))
 
-@asset(compute_kind="duckdb", io_manager_key=	"io_manager")
+@asset(compute_kind="duckdb", io_manager_key="io_manager")
 def raw_customers() -> pd.DataFrame:
     """
     Retrieves a raw csv file from which we can generate a pandas dataframe of customer data. 
