@@ -89,5 +89,3 @@ def raw_product_translations_dataset() -> pd.DataFrame:
     resulting_df = csv.fetchdf() # fetchdf() is a method that returns a pandas dataframe
     return resulting_df
 
-
-@

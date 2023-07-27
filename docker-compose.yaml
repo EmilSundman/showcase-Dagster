@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
     networks:
       - docker_network
 
@@ -101,6 +103,8 @@ services:
       - docker_user_code
       - docker_postgresql
 
+volumes: 
+  pgdata:
 
 networks:
   docker_network:

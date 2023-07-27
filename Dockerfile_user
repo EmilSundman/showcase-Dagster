@@ -11,7 +11,7 @@ COPY workspace.yaml /opt/dagster/app/
 COPY requirements.txt /opt/dagster/app/
 RUN pip install -r requirements.txt
 ADD assets_dbt_python /opt/dagster/app/assets_dbt_python
-ADD dbt_project /opt/dagster/app/dbt_project
+# ADD dbt_project /opt/dagster/app/dbt_project
 
 
 EXPOSE 4266
