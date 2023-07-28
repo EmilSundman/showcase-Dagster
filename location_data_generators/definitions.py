@@ -27,7 +27,7 @@ raw_data_assets = load_assets_from_package_module(
     raw_data,
     group_name="CSV_loaders",
     # all of these assets live in the duckdb database, under the schema raw_data
-    key_prefix=["raw_data", "duckster", "duckdb"],
+    key_prefix=["raw_data", "duckster", "ducky"],
 )
 @dbt_assets(manifest=Path(MANIFEST_PATH))
 def collection_of_dbt_assets(context: OpExecutionContext, dbt: DbtCliResource):
@@ -53,7 +53,8 @@ all_dbt_assets_job = define_asset_job(
 resources = {
     # this io_manager allows us to load dbt models as pandas dataframes
     "io_manager": DuckDBPandasIOManager(
-        database="duckster.duckdb"
+        database=f'md:duckster?motherduck_token={os.getenv("MOTHERDUCK_TOKEN")}'
+        # database="duckster.duckdb"
         ),
     # this resource is used to execute dbt cli commands
     "dbt": DbtCliResource(
