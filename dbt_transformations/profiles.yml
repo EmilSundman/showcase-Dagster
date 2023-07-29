@@ -3,5 +3,6 @@ dbt_transformations:
   outputs:
     local:
       type: duckdb
-      path: duckster.duckdb
+      path: " {{env_var('MOTHERDUCK_PATH') }}"
       schema: duckster
+      threads: 4

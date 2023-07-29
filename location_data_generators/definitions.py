@@ -20,19 +20,22 @@ from location_data_generators.assets import raw_data
 MANIFEST_PATH = "/opt/dagster/app/dbt_transformations/target/manifest.json"
 DBT_PROJECT_DIR = "/opt/dagster/app/dbt_transformations/."
 DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/config/."
-dbt_cli_args = ["--profiles-dir", f"{DBT_PROFILES_DIR}"]
+# dbt_cli_args = ["--profiles-dir", f"{DBT_PROFILES_DIR}"]
 
 
 raw_data_assets = load_assets_from_package_module(
     raw_data,
     group_name="CSV_loaders",
     # all of these assets live in the duckdb database, under the schema raw_data
-    key_prefix=["raw_data", "duckster", "ducky"],
+    key_prefix=["raw"],
 )
+
 @dbt_assets(manifest=Path(MANIFEST_PATH))
 def collection_of_dbt_assets(context: OpExecutionContext, dbt: DbtCliResource):
     dbt_task = dbt.cli(
-        ["run", *dbt_cli_args], 
+        ["run", 
+        #  *dbt_cli_args
+        ], 
         manifest=MANIFEST_PATH, 
         context=context
         )
@@ -53,7 +56,8 @@ all_dbt_assets_job = define_asset_job(
 resources = {
     # this io_manager allows us to load dbt models as pandas dataframes
     "io_manager": DuckDBPandasIOManager(
-        database=f'md:duckster?motherduck_token={os.getenv("MOTHERDUCK_TOKEN")}'
+        # database=f'md:duckster?motherduck_token={os.getenv("MOTHERDUCK_TOKEN")}', 
+        database=f'{os.getenv("MOTHERDUCK_PATH")}', 
         # database="duckster.duckdb"
         ),
     # this resource is used to execute dbt cli commands
@@ -61,7 +65,7 @@ resources = {
         project_dir=DBT_PROJECT_DIR,
         profiles_dir = DBT_PROFILES_DIR,
         profile="dbt_transformations",
-        target="local"
+        target="local", 
         ), 
 }
 

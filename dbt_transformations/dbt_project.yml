@@ -34,3 +34,14 @@ models:
     example:
       +materialized: view
       schema: dummy_example
+    stage:
+      +materialized: view
+      schema: stage
+      meta:
+        dagster:
+          group: stageOne
+      +dagster_auto_materialize_policy:
+        type: eager
+      +dagster_freshness_policy:
+        cron_schedule: "0 9 * * *"
+        maximum_lag_minutes: !!float 360
