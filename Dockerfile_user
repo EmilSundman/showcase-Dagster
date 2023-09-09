@@ -14,6 +14,6 @@ ADD assets_dbt_python /opt/dagster/app/assets_dbt_python
 # ADD dbt_project /opt/dagster/app/dbt_project
 
 
-EXPOSE 4266
+EXPOSE 4002
 
-CMD ["dagster", "api", "grpc", "-f", "./assets_dbt_python/definitions.py", "-h", "0.0.0.0", "-p", "4266"]
+CMD ["dagster", "api", "grpc", "-f", "./assets_dbt_python/definitions.py", "-h", "0.0.0.0", "-p", "4002"]

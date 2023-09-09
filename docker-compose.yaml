@@ -17,7 +17,7 @@ services:
   docker_user_code:
     build:
       context: .
-      dockerfile: ./Dockerfile_user
+      dockerfile: ./dockerfile_user
     container_name: docker_user_code
     image: docker_user_code_image
     restart: always
@@ -29,22 +29,28 @@ services:
       DAGSTER_CURRENT_IMAGE: "docker_user_code_image"
     env_file:
       - .env
+    expose:
+      - 4002
     networks:
       - docker_network
 
   docker_data_generators:
     build:
       context: .
-      dockerfile: ./Dockerfile_data_generators
+      dockerfile: ./dockerfile_data_generators
     container_name: docker_data_generators
+    image: docker_data_generators_image
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
+      DAGSTER_CURRENT_IMAGE: "docker_data_generators_image"
     env_file:
       - .env
+    expose:
+      - 4001
     networks:
       - docker_network
 
@@ -52,7 +58,7 @@ services:
   docker_dagster_ui:
     build:
       context: .
-      dockerfile: ./Dockerfile_dagster
+      dockerfile: ./dockerfile_dagster
     entrypoint:
       - dagster-webserver
       - -h
@@ -62,6 +68,7 @@ services:
       - -w
       - workspace.yaml
     container_name: docker_dagster_ui
+    image: docker_dagster_ui_image
     expose:
       - "3000"
     ports:
@@ -78,16 +85,18 @@ services:
       - docker_network
     depends_on:
       - docker_user_code
+      - docker_data_generators
       - docker_postgresql
 
   docker_daemon:
     build:
       context: .
-      dockerfile: ./Dockerfile_dagster
+      dockerfile: ./dockerfile_dagster
     entrypoint:
       - dagster-daemon
       - run
     container_name: docker_daemon
+    image: docker_daemon_image
     restart: on-failure
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
