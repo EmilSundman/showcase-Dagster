@@ -1,21 +1,20 @@
 # Main Dagster version 
-dagster==1.4.2
-dagster-webserver==1.4.2
-dagster-graphql==1.4.2
+dagster==1.4.12
+dagster-webserver==1.4.12
+dagster-graphql==1.4.12
 
 # Dagster integrations
-dagster-docker==0.20.2
-dagster-postgres==0.20.2
-dagster-duckdb==0.20.2
-dagster-duckdb-pandas==0.20.2
-dagster-dbt==0.20.2
+dagster-docker==0.20.12
+dagster-postgres==0.20.12
+dagster-duckdb==0.20.12
+dagster-duckdb-pandas==0.20.12
+dagster-dbt==0.20.12
 
 # Duck DB
 duckdb==0.8.1
 
 # dbt 
-dbt-duckdb==1.5.2
-dbt-core==1.5.3
+dbt-duckdb==1.6.0
 
 # Others
 pandas==2.0.3

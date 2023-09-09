@@ -11,9 +11,11 @@
 
 with source_data as (
 
-    select 1 as id
+    select 1 as id, 
+        CURRENT_DATE() as created_at
     union all
-    select null as id
+    select null as id, 
+        CURRENT_DATE() as created_at
 
 )
 

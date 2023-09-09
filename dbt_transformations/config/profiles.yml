@@ -1,7 +1,11 @@
 dbt_transformations:
-  target: local
+  target: motherduck
   outputs:
     local:
       type: duckdb
-      path: duckster.duckdb
+      path: duckster
+      schema: duckster
+    motherduck:
+      type: duckdb
+      path: "{{ env_var('MOTHERDUCK_PATH') }}"
       schema: duckster

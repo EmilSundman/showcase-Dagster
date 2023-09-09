@@ -1,4 +1,4 @@
-from dagster import asset, AssetIn, SourceAsset, AssetKey
+from dagster import asset, AssetIn, SourceAsset, AssetKey, asset_check, AssetCheckResult, FreshnessPolicy, AutoMaterializePolicy
 import os 
 import duckdb
 import pandas as pd
@@ -7,7 +7,13 @@ con = duckdb.connect()
 
 source_asset = SourceAsset(key=AssetKey("some_asset"))
 
-@asset(compute_kind="duckdb", io_manager_key="io_manager")
+
+@asset(
+        compute_kind="duckdb", 
+        io_manager_key="io_manager", 
+        auto_materialize_policy=AutoMaterializePolicy.lazy(),
+        freshness_policy=FreshnessPolicy(maximum_lag_minutes=24 * 60)
+        )
 def raw_customers() -> pd.DataFrame:
     """
     Retrieves a raw csv file from which we can generate a pandas dataframe of customer data. 
@@ -15,6 +21,11 @@ def raw_customers() -> pd.DataFrame:
     csv = duckdb.read_csv("./location_data_generators/assets/raw_data/seed/olist_customers_dataset.csv", header=True, sep=",")
     resulting_df = csv.fetchdf() # fetchdf() is a method that returns a pandas dataframe
     return resulting_df
+
+@asset_check(asset=raw_customers, description="Check that my asset has rows")
+def asset_not_empty() -> AssetCheckResult:
+    nr_rows = raw_customers().shape[0]
+    return AssetCheckResult(success=nr_rows > 0, metadata={"num_rows": nr_rows})
 
 @asset(compute_kind="duckdb", io_manager_key=	"io_manager")
 def raw_location() -> pd.DataFrame:

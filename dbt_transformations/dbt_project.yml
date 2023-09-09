@@ -33,4 +33,7 @@ models:
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view
-      schema: dummy_example
+      schema: duckster
+    stage:
+      +materialized: view
+      schema: stage

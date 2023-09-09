@@ -1,0 +1,6 @@
+sources: 
+  - name: raw
+    database: duckster
+    schema: raw
+    tables:
+      - name: raw_customers

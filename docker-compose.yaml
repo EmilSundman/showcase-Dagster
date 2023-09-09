@@ -26,6 +26,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
+      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
       DAGSTER_CURRENT_IMAGE: "docker_user_code_image"
     env_file:
       - .env
@@ -38,6 +39,9 @@ services:
     build:
       context: .
       dockerfile: ./dockerfile_data_generators
+      args: 
+        - MOTHERDUCK_TOKEN=${MOTHERDUCK_TOKEN}
+        - MOTHERDUCK_PATH_ARG=${MOTHERDUCK_PATH}
     container_name: docker_data_generators
     image: docker_data_generators_image
     restart: always
@@ -46,6 +50,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
+      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
       DAGSTER_CURRENT_IMAGE: "docker_data_generators_image"
     env_file:
       - .env
