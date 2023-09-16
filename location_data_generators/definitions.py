@@ -8,6 +8,7 @@ from dagster import (
     load_assets_from_package_module,
     AssetExecutionContext, 
     define_asset_job,
+    DailyPartitionsDefinition,
     BindResourcesToJobs
 )
 
@@ -20,7 +21,7 @@ from location_data_generators.assets.raw_data.load_data import asset_not_empty
 
 MANIFEST_PATH = "/opt/dagster/app/dbt_transformations/target/manifest.json"
 DBT_PROJECT_DIR = "/opt/dagster/app/dbt_transformations/"
-DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/config/"
+DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/"
 dbt_cli_args = ['--project-dir', f'{DBT_PROJECT_DIR}', '--profiles-dir', f'{DBT_PROFILES_DIR}']
 
 
@@ -30,10 +31,38 @@ raw_data_assets = load_assets_from_package_module(
     # all of these assets live in the duckdb database, under the schema raw_data
     key_prefix=["raw"]
 )
-@dbt_assets(manifest=Path(MANIFEST_PATH))
-def collection_of_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
+
+@dbt_assets(manifest=Path(MANIFEST_PATH), 
+            select="tag:dagster_asset", 
+            exclude="tag:partition_daily"
+            )
+def base_models(context: AssetExecutionContext, dbt: DbtCliResource):
+    
     dbt_task = dbt.cli(
         ["build", *dbt_cli_args], 
+        context=context
+        )
+    yield from dbt_task.stream()
+    
+@dbt_assets(manifest=Path(MANIFEST_PATH), 
+            select="tag:partition_daily", 
+            partitions_def=DailyPartitionsDefinition(start_date="2016-01-01")
+            )
+def daily_partitioned_models(context: AssetExecutionContext, dbt: DbtCliResource):
+    time_window = context.asset_partitions_time_window_for_output(
+        list(context.selected_output_names)[0]
+    )
+    dbt_vars = {
+        "start_ts": time_window.start.isoformat(),
+        "end_ts": time_window.end.isoformat()
+    }
+    
+    dbt_task = dbt.cli(
+        ["build", 
+        *dbt_cli_args, 
+        '--vars', 
+        f'"{json.dumps(dbt_vars)}"'
+        ], 
         context=context
         )
     yield from dbt_task.stream()
@@ -47,7 +76,7 @@ def collection_of_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource
 
 all_dbt_assets_job = define_asset_job(
     name="all_dbt_assets_job",
-    selection=[collection_of_dbt_assets],
+    selection=[base_models],
     ) 
 
 resources = {
@@ -68,7 +97,8 @@ resources = {
 defs = Definitions(
     assets=[
             *raw_data_assets,
-            collection_of_dbt_assets
+            base_models, 
+            daily_partitioned_models
             ],
     jobs=BindResourcesToJobs([all_dbt_assets_job]), 
     resources=resources,
