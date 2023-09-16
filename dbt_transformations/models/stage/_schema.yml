@@ -1,2 +1,13 @@
 models: 
   - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique:
+              config:
+                severity: warn 
+          - not_null
+      - name: customer_unique_id
+        tests:
+          - unique
+          - not_null

@@ -6,7 +6,7 @@ import os
 from dagster import (
     Definitions,
     load_assets_from_package_module,
-    OpExecutionContext, 
+    AssetExecutionContext, 
     define_asset_job,
     BindResourcesToJobs
 )
@@ -20,7 +20,7 @@ from location_data_generators.assets.raw_data.load_data import asset_not_empty
 
 MANIFEST_PATH = "/opt/dagster/app/dbt_transformations/target/manifest.json"
 DBT_PROJECT_DIR = "/opt/dagster/app/dbt_transformations/"
-DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/config/."
+DBT_PROFILES_DIR = "/opt/dagster/app/dbt_transformations/config/"
 dbt_cli_args = ['--project-dir', f'{DBT_PROJECT_DIR}', '--profiles-dir', f'{DBT_PROFILES_DIR}']
 
 
@@ -31,30 +31,30 @@ raw_data_assets = load_assets_from_package_module(
     key_prefix=["raw"]
 )
 @dbt_assets(manifest=Path(MANIFEST_PATH))
-def collection_of_dbt_assets(context: OpExecutionContext, dbt: DbtCliResource):
+def collection_of_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
     dbt_task = dbt.cli(
-        ["run", *dbt_cli_args], 
-        manifest=MANIFEST_PATH, 
+        ["build", *dbt_cli_args], 
         context=context
         )
     yield from dbt_task.stream()
 
     # do something with run results or other artifacts
-    try:
-        run_results = dbt_task.get_artifact("run_results.json")
-        context.log.info(f"Did {len(run_results['results'])} things.")
-    except FileNotFoundError:
-        context.log.info("No run results found.")
+    # try:
+    #     run_results = dbt_task.get_artifact("run_results.json")
+    #     context.log.info(f"Did {len(run_results['results'])} things.")
+    # except FileNotFoundError:
+    #     context.log.info("No run results found.")
 
 all_dbt_assets_job = define_asset_job(
     name="all_dbt_assets_job",
     selection=[collection_of_dbt_assets],
-) 
+    ) 
 
 resources = {
     # this io_manager allows us to load dbt models as pandas dataframes
     "io_manager": DuckDBPandasIOManager(
-        database=f'md:duckster?motherduck_token={os.getenv("MOTHERDUCK_TOKEN")}',
+        database=f'{os.getenv("MOTHERDUCK_PATH")}',
+        # database=f'duckster',
         ),
     # this resource is used to execute dbt cli commands
     "dbt": DbtCliResource(

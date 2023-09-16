@@ -3,7 +3,7 @@ dbt_transformations:
   outputs:
     local:
       type: duckdb
-      path: duckster
+      path: duckster.duckdb
       schema: duckster
     motherduck:
       type: duckdb
