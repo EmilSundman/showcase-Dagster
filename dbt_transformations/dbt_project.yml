@@ -37,3 +37,9 @@ models:
     stage:
       +materialized: view
       schema: stage
+
+tests:
+  +severity: warn  # all tests
+  +meta:
+    dagster:
+      asset_check: True

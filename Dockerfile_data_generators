@@ -5,7 +5,7 @@ ENV DAGSTER_CWD=/opt/dagster/app/
 # Need the Motherduck token when compiling the dbt project. Env_var is passed in at build time with a build arg defined in the docker-compose file
 
 ARG MOTHERDUCK_PATH_ARG 
-ENV MOTHERDUCK_PATH MOTHERDUCK_PATH_ARG
+ENV MOTHERDUCK_PATH ${MOTHERDUCK_PATH_ARG}
 WORKDIR ${DAGSTER_CWD}
 
 RUN mkdir -p $DAGSTER_HOME
@@ -20,7 +20,7 @@ COPY location_data_generators ${DAGSTER_CWD}/location_data_generators
 COPY dbt_transformations ${DAGSTER_CWD}/dbt_transformations
 
 
-RUN dbt compile --project-dir ./dbt_transformations --profiles-dir ./dbt_transformations/config
+RUN dbt compile --project-dir ./dbt_transformations --profiles-dir ./dbt_transformations/config --target motherduck
 
 EXPOSE 4001
 CMD ["dagster", "api", "grpc", "-f", "./location_data_generators/definitions.py", "-h", "0.0.0.0", "-p", "4001"]
