@@ -20,7 +20,7 @@ COPY location_data_generators ${DAGSTER_CWD}/location_data_generators
 COPY dbt_transformations ${DAGSTER_CWD}/dbt_transformations
 
 
-RUN dbt compile --project-dir ./dbt_transformations --profiles-dir ./dbt_transformations/config --target motherduck
+RUN dbt compile --project-dir ./dbt_transformations --profiles-dir ./dbt_transformations --target motherduck
 
 EXPOSE 4001
 CMD ["dagster", "api", "grpc", "-f", "./location_data_generators/definitions.py", "-h", "0.0.0.0", "-p", "4001"]

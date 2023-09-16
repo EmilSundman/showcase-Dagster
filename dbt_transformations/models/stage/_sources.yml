@@ -4,3 +4,4 @@ sources:
     schema: raw
     tables:
       - name: raw_customers
+      - name: raw_orders_dataset

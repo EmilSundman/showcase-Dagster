@@ -37,6 +37,16 @@ models:
     stage:
       +materialized: view
       schema: stage
+      +tags: ["dagster_asset"]
+      +meta:
+        dagster:
+          group: Staging
+
+
+vars:
+  # The `start_date` variable will be accessible in all resources
+  start_ts: '2016-01-01'
+  end_ts: '2030-06-01'
 
 tests:
   +severity: warn  # all tests
