@@ -17,7 +17,7 @@ services:
   docker_user_code:
     build:
       context: .
-      dockerfile: ./dockerfile_user
+      dockerfile: ./Dockerfile_user
     container_name: docker_user_code
     image: docker_user_code_image
     restart: always
@@ -38,7 +38,7 @@ services:
   docker_data_generators:
     build:
       context: .
-      dockerfile: ./dockerfile_data_generators
+      dockerfile: ./Dockerfile_data_generators
       args: 
         - MOTHERDUCK_TOKEN=${MOTHERDUCK_TOKEN}
         - MOTHERDUCK_PATH_ARG=${MOTHERDUCK_PATH}
@@ -63,7 +63,7 @@ services:
   docker_dagster_ui:
     build:
       context: .
-      dockerfile: ./dockerfile_dagster
+      dockerfile: ./Dockerfile_dagster
     entrypoint:
       - dagster-webserver
       - -h
@@ -96,7 +96,7 @@ services:
   docker_daemon:
     build:
       context: .
-      dockerfile: ./dockerfile_dagster
+      dockerfile: ./Dockerfile_dagster
     entrypoint:
       - dagster-daemon
       - run
