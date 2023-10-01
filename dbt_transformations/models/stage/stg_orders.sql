@@ -1,11 +1,6 @@
 {{
     config(
-        materialized='incremental',
-        on_schema_change='append_new_columns',
-        unique_key='order_id',
-        tags=["partition_daily"], 
-        dagster_freshness_policy={"maximum_lag_minutes": 30},
-        dagster_auto_materialize_policy={"type":"eager"}
+        dagster_auto_materialize_policy={"type":"lazy"}
     )
 }}
 

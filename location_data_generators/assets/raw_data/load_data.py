@@ -63,7 +63,10 @@ def raw_order_reviews_dataset() -> pd.DataFrame:
     resulting_df = csv.fetchdf() # fetchdf() is a method that returns a pandas dataframe
     return resulting_df
 
-@asset(compute_kind="duckdb", io_manager_key=	"io_manager")
+@asset(compute_kind="duckdb", 
+        auto_materialize_policy=AutoMaterializePolicy.lazy(),
+        io_manager_key=	"io_manager"
+        )
 def raw_orders_dataset() -> pd.DataFrame:
     """
     Retrieves a raw csv file from which we can generate a pandas dataframe of orders data. 

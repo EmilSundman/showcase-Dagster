@@ -41,6 +41,20 @@ models:
       +meta:
         dagster:
           group: Staging
+    core:
+      +materialized: view
+      schema: core
+      +tags: ["dagster_asset"]
+      +meta:
+        dagster:
+          group: Core
+    mart:
+      +materialized: table
+      schema: mart
+      +tags: ["dagster_asset"]
+      +meta:
+        dagster:
+          group: Mart
 
 
 vars:

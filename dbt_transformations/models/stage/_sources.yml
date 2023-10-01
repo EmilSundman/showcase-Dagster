@@ -5,3 +5,4 @@ sources:
     tables:
       - name: raw_customers
       - name: raw_orders_dataset
+      - name: raw_order_reviews_dataset
