@@ -59,6 +59,22 @@ services:
     networks:
       - docker_network
 
+  docker_simulated_source_system:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_simulated_source_system
+    container_name: docker_simulated_source_system
+    image: docker_simulated_source_system_image
+    restart: always
+    environment:
+      DAGSTER_CURRENT_IMAGE: "docker_simulated_source_system_image"
+    env_file:
+      - .env
+    expose:
+      - 4003
+    networks:
+      - docker_network
+
 
   docker_dagster_ui:
     build:

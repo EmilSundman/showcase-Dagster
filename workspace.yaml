@@ -2,10 +2,14 @@
 
 load_from:
     - grpc_server:
+        host: docker_data_generators
+        port: 4001
+        location_name: "data_generators"
+    - grpc_server:
         host: docker_user_code
         port: 4002
         location_name: "user_code"
     - grpc_server:
-        host: docker_data_generators
-        port: 4001
-        location_name: "data_generators"
+        host: docker_simulated_source_system
+        port: 4003
+        location_name: "simulated_source_system"

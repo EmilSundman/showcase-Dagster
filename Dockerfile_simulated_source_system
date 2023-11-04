@@ -1,0 +1,19 @@
+FROM python:3.9-slim
+
+ENV DAGSTER_HOME=/opt/dagster/dagster_home/
+ENV DAGSTER_CWD=/opt/dagster/app/
+
+WORKDIR ${DAGSTER_CWD}
+
+RUN mkdir -p $DAGSTER_HOME
+
+
+COPY dagster.yaml ${DAGSTER_CWD}
+COPY workspace.yaml ${DAGSTER_CWD}
+COPY simulated_source_system/requirements.txt ${DAGSTER_CWD}
+RUN pip install -r requirements.txt
+
+COPY simulated_source_system ${DAGSTER_CWD}/simulated_source_system
+
+EXPOSE 4003
+CMD ["dagster", "api", "grpc", "-f", "./simulated_source_system/definitions.py", "-h", "0.0.0.0", "-p", "4003"]
