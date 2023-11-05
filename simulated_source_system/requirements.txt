@@ -11,10 +11,11 @@ dagster-duckdb-pandas==0.21.6
 dagster-dbt==0.21.6
 
 # Duck DB
-duckdb==0.8.1
+duckdb==0.9.1
 
 # dbt 
-dbt-duckdb==1.6.1
+dbt-duckdb==1.6.2
 
 # Others
 pandas==2.0.3
+faker
