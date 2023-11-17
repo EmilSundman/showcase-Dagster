@@ -9,7 +9,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
-    volumes: 
+    volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - docker_network
@@ -67,9 +67,13 @@ services:
     image: docker_simulated_source_system_image
     restart: always
     environment:
+      MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
+      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
       DAGSTER_CURRENT_IMAGE: "docker_simulated_source_system_image"
     env_file:
       - .env
+    volumes:
+      - /duckster.duckdb:/simulated_source_system/duckster.duckdb
     expose:
       - 4003
     networks:

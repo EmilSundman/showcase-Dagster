@@ -7,7 +7,6 @@ WORKDIR ${DAGSTER_CWD}
 
 RUN mkdir -p $DAGSTER_HOME
 
-
 COPY dagster.yaml ${DAGSTER_CWD}
 COPY workspace.yaml ${DAGSTER_CWD}
 COPY simulated_source_system/requirements.txt ${DAGSTER_CWD}
