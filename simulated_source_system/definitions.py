@@ -14,9 +14,9 @@ source_system = load_assets_from_package_module(
 
 resources = {
     # this io_manager allows us to load dbt models as pandas dataframes
-    "io_manager": DuckDBPandasIOManager(
+    "duckdb_IOManager": DuckDBPandasIOManager(
         database=f'{os.getenv("MOTHERDUCK_PATH")}', 
-        schema="source_system"
+        schema="raw", 
         ),
 }
 

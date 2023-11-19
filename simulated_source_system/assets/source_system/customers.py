@@ -1,5 +1,6 @@
 import faker 
 import duckdb
+import datetime
 import pandas as pd
 from duckdb.typing import *  
 import random
@@ -20,12 +21,14 @@ def generate_person(seed):
         'company': fake.company(),
         'ssn': fake.ssn(),
         'birthdate': fake.date_of_birth(),
-        'phone_number': fake.phone_number()
+        'phone_number': fake.phone_number(),
+        'inserted_at': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     return person
 
-@asset(compute_kind="duckdb", 
-        freshness_policy=FreshnessPolicy(maximum_lag_minutes=2),
+@asset(io_manager_key="duckdb_IOManager",
+        compute_kind="duckdb", 
+        freshness_policy=FreshnessPolicy(maximum_lag_minutes=10),
         auto_materialize_policy=AutoMaterializePolicy.eager()
         )
 def GenerateCustomers(context) -> Output:
@@ -56,7 +59,8 @@ def GenerateCustomers(context) -> Output:
         'company': 'VARCHAR',
         'ssn': 'VARCHAR',
         'birthdate': 'DATE',
-        'phone_number': 'VARCHAR'
+        'phone_number': 'VARCHAR',
+        'inserted_at': 'TIMESTAMP'
     }
     con.create_function(
         'generate_person',

@@ -14,7 +14,7 @@ run_launcher:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-      - MOTHERDUCK_TOKEN
+      - MOTHERDUCK_PATH
     network: docker_network
     container_kwargs:
       volumes: # Make docker client accessible to any launched containers as well
