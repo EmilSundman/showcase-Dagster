@@ -14,8 +14,12 @@ run_launcher:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-      - MOTHERDUCK_TOKEN
-    network: docker_network
+      - MOTHERDUCK_PATH
+      - DUCKDB_DB
+      - API_FOOTBALL_KEY
+      - GOOGLE_APPLICATION_CREDENTIALS
+      - ENVIRONMENT
+    network: network_FootballDataPlatform
     container_kwargs:
       volumes: # Make docker client accessible to any launched containers as well
         - /var/run/docker.sock:/var/run/docker.sock
@@ -26,7 +30,7 @@ run_storage:
   class: PostgresRunStorage
   config:
     postgres_db:
-      hostname: docker_postgresql
+      hostname: docker_postgresql_FootballDataPlatform
       username:
         env: POSTGRES_USER
       password:
@@ -40,7 +44,7 @@ schedule_storage:
   class: PostgresScheduleStorage
   config:
     postgres_db:
-      hostname: docker_postgresql
+      hostname: docker_postgresql_FootballDataPlatform
       username:
         env: POSTGRES_USER
       password:
@@ -54,7 +58,7 @@ event_log_storage:
   class: PostgresEventLogStorage
   config:
     postgres_db:
-      hostname: docker_postgresql
+      hostname: docker_postgresql_FootballDataPlatform
       username:
         env: POSTGRES_USER
       password:

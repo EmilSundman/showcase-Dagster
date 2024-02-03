@@ -1,0 +1,22 @@
+# Profile for motherduck
+config: 
+  use_experimental_parser: true
+
+dbt_transformations:
+  target: DEV
+  outputs:
+    LOCAL:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_DB') }}"
+      schema: local
+      threads: 10
+    DEV:
+      type: duckdb
+      path: "{{ env_var('MOTHERDUCK_PATH') }}"
+      schema: dev
+      threads: 10
+    PROD:
+      type: duckdb
+      path: "{{ env_var('MOTHERDUCK_PATH') }}"
+      schema: prod
+      threads: 10

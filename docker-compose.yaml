@@ -1,69 +1,24 @@
 services:
 
-  docker_postgresql:
+  # Dagster Images
+  docker_postgresql_FootballDataPlatform:
     image: postgres:11
-    container_name: docker_postgresql
+    container_name: docker_postgresql_FootballDataPlatform
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     env_file:
       - .env
-    volumes: 
+    volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - docker_network
-
-  docker_user_code:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_user
-    container_name: docker_user_code
-    image: docker_user_code_image
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
-      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
-      DAGSTER_CURRENT_IMAGE: "docker_user_code_image"
-    env_file:
-      - .env
-    expose:
-      - 4002
-    networks:
-      - docker_network
-
-  docker_data_generators:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_data_generators
-      args: 
-        - MOTHERDUCK_TOKEN=${MOTHERDUCK_TOKEN}
-        - MOTHERDUCK_PATH_ARG=${MOTHERDUCK_PATH}
-    container_name: docker_data_generators
-    image: docker_data_generators_image
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
-      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
-      DAGSTER_CURRENT_IMAGE: "docker_data_generators_image"
-    env_file:
-      - .env
-    expose:
-      - 4001
-    networks:
-      - docker_network
-
+      - network_FootballDataPlatform
 
   docker_dagster_ui:
     build:
       context: .
-      dockerfile: ./Dockerfile_dagster
+      dockerfile: ./Dockerfile
     entrypoint:
       - dagster-webserver
       - -h
@@ -72,8 +27,8 @@ services:
       - "3000"
       - -w
       - workspace.yaml
-    container_name: docker_dagster_ui
-    image: docker_dagster_ui_image
+    container_name: docker_dagster_ui_FootballDataPlatform
+    image: image_dagster_ui
     expose:
       - "3000"
     ports:
@@ -87,42 +42,91 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - docker_network
-    depends_on:
-      - docker_user_code
-      - docker_data_generators
-      - docker_postgresql
+      - network_FootballDataPlatform
 
   docker_daemon:
     build:
       context: .
-      dockerfile: ./Dockerfile_dagster
+      dockerfile: ./Dockerfile
     entrypoint:
       - dagster-daemon
       - run
-    container_name: docker_daemon
-    image: docker_daemon_image
+    container_name: docker_daemon_FootballDataPlatform
+    image: image_dagster_daemon
     restart: on-failure
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY}
       POSTGRES_DB: ${POSTGRES_DB}
-      MOTHERDUCK_TOKEN: ${MOTHERDUCK_TOKEN}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
     env_file:
       - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - docker_network
+      - network_FootballDataPlatform
     depends_on:
-      - docker_user_code
-      - docker_data_generators
-      - docker_postgresql
+      - docker_postgresql_FootballDataPlatform
+  
+
+  ## CODE LOCATIONS
+  integration_layer: 
+    build:
+      context: .
+      dockerfile: ./location_integration_layer/Dockerfile
+    container_name: integration_layer_FootballDataPlatform
+    image: image_integration_layer
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
+      DUCKDB_DB: ${DUCKDB_DB}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      ENVIRONMENT: ${ENVIRONMENT}
+      DAGSTER_CURRENT_IMAGE: "image_integration_layer"
+    expose:
+      - "4001"
+    networks:
+      - network_FootballDataPlatform
+
+  dbt_layer: 
+    build:
+      context: .
+      dockerfile: ./location_dbt_layer/Dockerfile
+      args: 
+        - MOTHERDUCK_PATH_ARG=${MOTHERDUCK_PATH}
+        - ENVIRONMENT_ARG=${ENVIRONMENT}
+        - DUCKDB_DB_ARG=${DUCKDB_DB}
+    container_name: dbt_layer_FootballDataPlatform
+    image: image_dbt_layer
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MOTHERDUCK_PATH: ${MOTHERDUCK_PATH}
+      DUCKDB_DB: ${DUCKDB_DB}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      ENVIRONMENT: ${ENVIRONMENT}
+      DAGSTER_CURRENT_IMAGE: "image_dbt_layer"
+    expose:
+      - "4002"
+    networks:
+      - network_FootballDataPlatform
 
 volumes: 
   pgdata:
 
 networks:
-  docker_network:
+  network_FootballDataPlatform:
     driver: bridge
-    name: docker_network
+    name: network_FootballDataPlatform

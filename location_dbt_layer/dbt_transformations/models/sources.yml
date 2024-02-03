@@ -1,0 +1,10 @@
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: raw_leagues
+      - name: raw_fixtures
+      - name: raw_seasons
+      - name: raw_fixture_events
+      - name: raw_fixture_stats
+      - name: raw_fixture_player_stats

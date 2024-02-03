@@ -1,0 +1,44 @@
+
+# Name your project! Project names should contain only lowercase characters and underscores
+name: 'dbt_transformations'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_transformations'
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+tests: 
+  +severity: warn
+# Define variables here
+vars:
+  partition_start_date: '1970-01-01'
+  partition_end_date: '2099-12-31'
+
+# Configuring models
+models:
+  dbt_transformations:
+    # Config indicated by + and applies to all files under models/example/
+    STAGE:
+      +materialized: view
+      +schema: stage
+      +group: STAGE
+      +dagster_auto_materialize_policy: 
+            type: lazy
+    ANALYTICS:
+      +materialized: view
+      +schema: analytics
+      +group: ANALYTICS
+      +dagster_auto_materialize_policy: 
+            type: lazy
