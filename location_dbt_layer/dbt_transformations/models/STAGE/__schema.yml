@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_leagues
+    description: 'This model is used to create a staging table for leagues'
+    columns: 
+      - name: leagueid
+        tests: 
+          - unique:
+              severity: error
+      - name: name 
+        tests: 
+          - not_null
+  - name: stg_seasons
+  - name: stg_fixture_player_stats
+    columns: 
+      - name: teamid 
+        # A test designed to fail
+        # tests: 
+        #   - unique:
+        #       severity: error
+  - name: stg_fixtures
+    columns: 
+      - name: leaguecountry 
+        tests: 
+          - unique:
+              severity: warn
+    description: 'This model is used to create a staging table for fixtures'

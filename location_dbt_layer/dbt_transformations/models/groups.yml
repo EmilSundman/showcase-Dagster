@@ -1,0 +1,7 @@
+groups:
+  - name: STAGE
+    owner:
+      name: A very responsible person
+  - name: ANALYTICS
+    owner:
+      name: A very smart person
